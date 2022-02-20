@@ -19,6 +19,13 @@ It's dead simple :
 ```
 $ pip install zappadock
 ```
+## Usage 
+Make sure Docker is installed by running `docker info` command from a terminal  
+Run `zappadock` in the directory you wish to run your Zappa commands.  
+ZappaDock will attempt to pull your AWS Credentials from the `AWS_ACCESS_KEY_ID` , `AWS_SECRET_ACCESS_KEY` and `AWS_DEFAULT_REGION` environmental variables or from the `~/.aws/credentials` file.  
+It will then create a Dockerfile in your working directory, build the image, and run the container with the variables set, create a python virtual environment and activate it.  
+
+
 ## Uninstall 
 Duh. Just :
 ```
