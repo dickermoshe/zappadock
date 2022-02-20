@@ -152,4 +152,5 @@ cython_debug/
 #.idea/
 .python-version
 .zappaenv-Dockerfile
+.zappadock-Dockerfile
 zappa-venv/

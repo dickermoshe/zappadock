@@ -11,8 +11,8 @@ FROM {base_image}
 
 WORKDIR /var/task
 
-# Fancy prompt to remind you are in ZappaEnv
-RUN echo 'export PS1="\[\e[36m\]ZappaEnv>\[\e[m\] "' >> /root/.bashrc
+# Fancy prompt to remind you are in ZappaDock
+RUN echo 'export PS1="\[\e[36m\]ZappaDock>\[\e[m\] "' >> /root/.bashrc
 
 # Additional RUN commands here
 RUN yum clean all
@@ -55,8 +55,8 @@ def get_creds_from_credentials_file():
         return key, secret, region if not None in (key, secret, region) else False
 
 @click.command()
-def zappaenv():
-    docker_file = '.zappaenv-Dockerfile'
+def zappadock():
+    docker_file = '.zappadock-Dockerfile'
     if not os.path.isfile(docker_file):
         click.echo(f"Creating Dockerfile.")
         with open(docker_file, 'w') as f:
@@ -107,13 +107,13 @@ def zappaenv():
             click.echo("Exiting...")
             exit()
     
-    # Create command to start ZappaEnv
+    # Create command to start ZappaDock
     cmnd1 ="docker run -ti --rm"
     cmnd2 = f"-e AWS_ACCESS_KEY_ID={credentials[0]} -e AWS_SECRET_ACCESS_KEY={credentials[1]} -e AWS_DEFAULT_REGION={credentials[2]}"
     cmnd3 = f'-v "{os.getcwd()}:/var/task" {docker_image[0].id}'
 
     # Run command
-    click.echo("Starting ZappaEnv...")
+    click.echo("Starting ZappaDock...")
     os.system(f"{cmnd1} {cmnd2} {cmnd3}")
 
 
