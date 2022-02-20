@@ -1,0 +1,8 @@
+certifi==2021.10.8
+charset-normalizer==2.0.12
+click==8.0.4
+docker==5.0.3
+idna==3.3
+requests==2.27.1
+urllib3==1.26.8
+websocket-client==1.2.3
