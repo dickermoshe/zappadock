@@ -1,37 +1,41 @@
 # ZappaDock
 ## About
-This package makes dealing with Zappa a walk in the park.
-### How ?
+This package makes dealing with [Zappa](https://github.com/zappa/Zappa) a walk in the park.
+#### How ?
 Zappa runs Flask/Django web apps on AWS Lambda.  
 We LOVE Zappa. However it's not the MOST user-friendly application ever.
-### Why ?
-You see, Zappa builds all your requirements before uploading your app to AWS Lambda. The problem is that your OS looks nothing like the environment that AWS Lambda looks like.
-### So What's the problem ?
-Simply, pip downloads the packages that are compatible with the computer it is running on, so when Zappa uploads it to AWS Lambda, many packages don't work (notably `psycopg2` among others).
-### What Does ZappaDock Do ?
-ZappaDock runs a docker container that mimics the AWS Lambda environment.  
-All your code is mounted and inside of a virtual environment.  
-Your AWS credentials are also automatically loaded from your environmental variables or your aws credential file.  
-So now yor code is running in a Python virtual environment inside of a docker container.  
-From here you can test your app and run the Zappa commands you need.  
+#### Why ?
+You see, Zappa builds all your requirements before uploading your app to AWS Lambda. However, pip downloads the packages that are compatible with the computer it is running on, so when Zappa uploads it to AWS Lambda, many packages don't work (notably `psycopg2` among others).
+#### What's the solution ?
+The solution recommend by the [The Django Guide for Zappa](https://romandc.com/zappa-django-guide/) is to run your Zappa commands in a docker container similar to the one that AWS Lambda uses.  
+This will ensure that all the dependencies will be AWS Lambda compatible. 
+This ZappaDock streamlines the workflow.
+#### What Does ZappaDock Do ?
+ZappaDock does 3 things.
+1. Run a docker container with your code mounted.
+2. Recognize your AWS credentials and load them into the container.
+3. Create and activate a virtual environment inside the container.  
+
+So now you can test and deploy your code confident that it will work once deployed.  
+
+
 ## Install 
 It's dead simple :
 ```
 $ pip install zappadock
 ```
+
+
 ## Usage 
-Make sure Docker is installed by running `docker info` command from a terminal  
-Run `zappadock` in the directory you wish to run your Zappa commands.  
-ZappaDock will attempt to pull your AWS Credentials from the `AWS_ACCESS_KEY_ID` , `AWS_SECRET_ACCESS_KEY` and `AWS_DEFAULT_REGION` environmental variables or from the `~/.aws/credentials` file.  
-It will then create a Dockerfile in your working directory, build the image, and run the container with the variables set, create a python virtual environment and activate it.  
+1. Make sure Docker is installed by running `docker info` command from a terminal.
+2. Set your AWS credentials in environmental variables or in the `~/.aws/credentials` file.  See the [Amazon Docs](https://boto3.amazonaws.com/v1/documentation/api/latest/guide/credentials.html#environment-variables) for more information.
+3. Run `zappadock` in the directory you wish to run your Zappa commands.  
+Your directory will be loaded in a docker container, and a virtual environment will be created and activated.  
+
+If you have any problems, open a issue and we'll figure it out.
 
 
-## Uninstall 
-Duh. Just :
-```
-$ pip uninstall zappadock
-```
 ## Contributing
-I mostly made this for myself. Just threw it together. If you want to make this a masterpiece, be a sport and contribute.  
+I mostly made this for myself.  If you want to help make this a masterpiece, be a sport and contribute.  
 Thanks!
 

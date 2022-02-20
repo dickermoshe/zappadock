@@ -154,3 +154,4 @@ cython_debug/
 .zappaenv-Dockerfile
 .zappadock-Dockerfile
 zappa-venv/
+.vscode/
