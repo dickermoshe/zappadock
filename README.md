@@ -1,4 +1,4 @@
-# ZappaDock
+# [ZappaDock](https://pypi.org/project/zappadock/)
 ## About
 This package makes dealing with [Zappa](https://github.com/zappa/Zappa) a walk in the park.
 #### How ?
