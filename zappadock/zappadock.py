@@ -1,5 +1,5 @@
-
 import os
+import json
 import platform
 import configparser
 import traceback
@@ -29,8 +29,11 @@ def get_creds_from_env():
     key = os.environ.get('AWS_ACCESS_KEY_ID')
     secret = os.environ.get('AWS_SECRET_ACCESS_KEY')
     region = os.environ.get('AWS_DEFAULT_REGION')
-    profile = 'default'
-    return key, secret, region ,profile if not None in (key, secret, region) else False
+
+    if None == key or None == secret or None == region:
+        return False
+    else:
+        return key, secret, region
 
 def get_creds_from_credentials_file():
     # Get credentials from ~/.aws/credentials
@@ -54,11 +57,14 @@ def get_creds_from_credentials_file():
         key = config[profile].get('aws_access_key_id')
         secret = config[profile].get('aws_secret_access_key')
         region = config[profile].get('region')
-        return key, secret, region ,profile if not None in (key, secret, region) else False
+        return False if None in (key, secret, region) else profile
 
 @click.command()
 def zappadock():
+    # Set Zappadock Docker File
     docker_file = '.zappadock-Dockerfile'
+
+    # Create Dockerfile
     if not os.path.isfile(docker_file):
         click.echo(f"Creating Dockerfile.")
         with open(docker_file, 'w') as f:
@@ -80,16 +86,58 @@ def zappadock():
 
             f.write(DOCKERFILE.format(base_image=image))
 
-    # Get credentials
-    click.echo("Getting AWS credentials.")
-    credentials = get_creds_from_env() 
-    if not credentials:
-        credentials = get_creds_from_credentials_file()
-    if not credentials:
-        click.echo("Credentials not found.\nYou can set them in ~/.aws/credentials or by setting environment variables.\nSee https://boto3.amazonaws.com/v1/documentation/api/latest/guide/credentials.html#environment-variables for more info.")
-        click.echo("Exiting...")
-        exit()
+    # Check if Zappa has already been run
+    if os.path.isfile('zappa_settings.json'):
+
+        # Check from settings if Zappadock should use environment variables or credentials file
+        with open('zappa_settings.json') as f:
+            # Try to get 'profile_name' from settings
+            try:
+                _ = list(json.load(f).values())[0]['profile_name']
+                creds_type = 'file'
+            
+            # File exists but no profile name is set
+            except KeyError:
+                creds_type = 'env'
+            
+            # File exists but there are no settings or invalid JSON
+            except (IndexError , json.decoder.JSONDecodeError):
+                creds_type = 'any'
+    else:
+        creds_type = 'any'
     
+    # Get credentials from environment variables
+    if creds_type == 'env':
+        env_creds = get_creds_from_env()
+        if env_creds:
+            run_docker_settings = f' -e AWS_ACCESS_KEY_ID={env_creds[0]} -e AWS_SECRET_ACCESS_KEY={env_creds[1]} -e AWS_DEFAULT_REGION={env_creds[2]} '
+        else:
+            click.echo("Please set the AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY, and AWS_DEFAULT_REGION environment variables.")
+            exit()
+
+    # Get credentials from ~/.aws/credentials
+    elif creds_type == 'file':
+        profile_name = get_creds_from_credentials_file()
+        if profile_name:
+            run_docker_settings = f' -e AWS_PROFILE={profile_name} -v ~/.aws/:/root/.aws '
+        else:
+            click.echo("Your Zappa settings are configured to use credentials from ~/.aws/credentials.\nNone of the profiles in ~/.aws/credentials were found.")
+            exit()
+    
+    # Get credentials from any source
+    elif creds_type == 'any':
+        env_creds = get_creds_from_env()
+        if env_creds:
+            run_docker_settings = f' -e AWS_ACCESS_KEY_ID={env_creds[0]} -e AWS_SECRET_ACCESS_KEY={env_creds[1]} -e AWS_DEFAULT_REGION={env_creds[2]} '
+        else:
+            profile_name = get_creds_from_credentials_file()
+            if profile_name:
+                run_docker_settings = f' -e AWS_PROFILE={profile_name} -v ~/.aws/:/root/.aws '
+            else:
+                click.echo("Credentials not found.\nYou can set them in ~/.aws/credentials or by setting environment variables.\nSee https://boto3.amazonaws.com/v1/documentation/api/latest/guide/credentials.html#environment-variables for more info.")
+                exit()
+
+
     # Create Docker client
     try:
         click.echo("Creating Docker client.")
@@ -111,13 +159,9 @@ def zappadock():
     
     # Create command to start ZappaDock
     cmnd1 ="docker run -ti --rm"
-    cmnd2 = f"-e AWS_ACCESS_KEY_ID={credentials[0]} -e AWS_SECRET_ACCESS_KEY={credentials[1]} -e AWS_DEFAULT_REGION={credentials[2]} -e AWS_PROFILE={credentials[3]}"
+    cmnd2 = run_docker_settings
     cmnd3 = f'-v "{os.getcwd()}:/var/task" {docker_image[0].id}'
 
     # Run command
     click.echo("Starting ZappaDock...")
     os.system(f"{cmnd1} {cmnd2} {cmnd3}")
-
-
-    
-
