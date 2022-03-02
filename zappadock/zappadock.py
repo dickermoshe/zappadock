@@ -29,7 +29,8 @@ def get_creds_from_env():
     key = os.environ.get('AWS_ACCESS_KEY_ID')
     secret = os.environ.get('AWS_SECRET_ACCESS_KEY')
     region = os.environ.get('AWS_DEFAULT_REGION')
-    return key, secret, region if not None in (key, secret, region) else False
+    profile = 'default'
+    return key, secret, region ,profile if not None in (key, secret, region) else False
 
 def get_creds_from_credentials_file():
     # Get credentials from ~/.aws/credentials
@@ -53,7 +54,7 @@ def get_creds_from_credentials_file():
         key = config[profile].get('aws_access_key_id')
         secret = config[profile].get('aws_secret_access_key')
         region = config[profile].get('region')
-        return key, secret, region if not None in (key, secret, region) else False
+        return key, secret, region ,profile if not None in (key, secret, region) else False
 
 @click.command()
 def zappadock():
@@ -110,14 +111,12 @@ def zappadock():
     
     # Create command to start ZappaDock
     cmnd1 ="docker run -ti --rm"
-    cmnd2 = f"-e AWS_ACCESS_KEY_ID={credentials[0]} -e AWS_SECRET_ACCESS_KEY={credentials[1]} -e AWS_DEFAULT_REGION={credentials[2]}"
+    cmnd2 = f"-e AWS_ACCESS_KEY_ID={credentials[0]} -e AWS_SECRET_ACCESS_KEY={credentials[1]} -e AWS_DEFAULT_REGION={credentials[2]} -e AWS_PROFILE={credentials[3]}"
     cmnd3 = f'-v "{os.getcwd()}:/var/task" {docker_image[0].id}'
 
     # Run command
     click.echo("Starting ZappaDock...")
     os.system(f"{cmnd1} {cmnd2} {cmnd3}")
-
-
 
 
     
