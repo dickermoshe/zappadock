@@ -13,7 +13,7 @@ This ZappaDock streamlines the workflow.
 #### What Does ZappaDock Do ?
 ZappaDock does 3 things.
 1. Run a docker container with your code mounted.
-2. Recognize your AWS credentials and load them into the container.
+2. Load your AWS Credentials from the `~/.aws` folder and environmental variables into the container.
 3. Create and activate a virtual environment inside the container.  
 
 So now you can test and deploy your code confident that it will work once deployed.  
@@ -28,7 +28,7 @@ $ pip install zappadock
 
 ## Usage 
 1. Make sure Docker is installed by running `docker info` command from a terminal.
-2. Set your AWS credentials in environmental variables or in the `~/.aws/credentials` file.  See the [Amazon Docs](https://boto3.amazonaws.com/v1/documentation/api/latest/guide/credentials.html#environment-variables) for more information.
+2. Set your AWS credentials in environmental variables or in the `~/.aws` folder.  See the [Amazon Docs](https://boto3.amazonaws.com/v1/documentation/api/latest/guide/credentials.html#environment-variables) for more information.
 3. Run `zappadock` in the directory you wish to run your Zappa commands.  
 Your directory will be loaded in a docker container, and a virtual environment will be created and activated.  
 
