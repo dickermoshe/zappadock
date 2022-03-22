@@ -1,4 +1,23 @@
-# [ZappaDock](https://pypi.org/project/zappadock/)
+# ZappaDock
+[![Downloads](https://pepy.tech/badge/zappadock)](https://pepy.tech/project/zappadock)
+
+### Install 
+It's dead simple :
+```
+$ pip install zappadock
+```
+
+
+## Usage 
+1. Check that the Docker daemon is running by typing `docker info` command from a terminal.
+2. Set your AWS credentials in environmental variables or in the `~/.aws` folder.  See the [Amazon Docs](https://boto3.amazonaws.com/v1/documentation/api/latest/guide/credentials.html#environment-variables) for more information.
+3. Run `zappadock` in the directory you wish to run your Zappa commands.  
+Your directory will be loaded in a docker container, and a virtual environment will be created and activated.  
+
+If you have any problems, open a issue and we'll figure it out.
+  
+  
+  
 ## About
 This package makes dealing with [Zappa](https://github.com/zappa/Zappa) a walk in the park.
 #### How ?
@@ -17,22 +36,6 @@ ZappaDock does 3 things.
 3. Create and activate a virtual environment inside the container.  
 
 So now you can test and deploy your code confident that it will work once deployed.  
-
-
-## Install 
-It's dead simple :
-```
-$ pip install zappadock
-```
-
-
-## Usage 
-1. Make sure Docker is installed by running `docker info` command from a terminal.
-2. Set your AWS credentials in environmental variables or in the `~/.aws` folder.  See the [Amazon Docs](https://boto3.amazonaws.com/v1/documentation/api/latest/guide/credentials.html#environment-variables) for more information.
-3. Run `zappadock` in the directory you wish to run your Zappa commands.  
-Your directory will be loaded in a docker container, and a virtual environment will be created and activated.  
-
-If you have any problems, open a issue and we'll figure it out.
 
 
 ## Contributing
