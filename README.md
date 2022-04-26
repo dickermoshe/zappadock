@@ -14,6 +14,12 @@ $ pip install zappadock
 3. Run `zappadock` in the directory you wish to run your Zappa commands.  
 Your directory will be loaded in a docker container, and a virtual environment will be created and activated.  
 
+4. To run the built-in servers:
+* Django:  
+`python manage.py runserver 0.0.0.0:8000`  
+* Flask:  
+`flask run --host=0.0.0.0 --port=8000`  
+
 If you have any problems, open a issue and we'll figure it out.
   
   
