@@ -106,7 +106,7 @@ def zappadock():
             exit()
     
     # Create command to start ZappaDock
-    docker_run_command.append(f'-v "{os.getcwd()}:/var/task" {docker_image[0].id}')
+    docker_run_command.append(f'-v "{os.getcwd()}:/var/task" -p 8000:8000 {docker_image[0].id}')
 
     # Run Docker Command
     click.echo("Starting ZappaDock...")
