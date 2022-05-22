@@ -17,7 +17,7 @@ RUN echo 'export PS1="\[\e[36m\]ZappaDock>\[\e[m\] "' >> /root/.bashrc
 
 # Additional RUN commands here
 RUN yum clean all
-RUN yum install -y which clang cmake python-devel python3-devel amazon-linux-extras gcc openssl-devel bzip2-devel libffi-devel wget tar gzip make
+RUN yum install -y which clang cmake python-devel python3-devel amazon-linux-extras gcc openssl-devel bzip2-devel libffi-devel wget tar gzip make postgresql-devel
 
 # Commands to Create/Activate python Virtual Environment on launch
 RUN echo 'virtualenv -p python3 ./zappa-venv >/dev/null' >> /root/.bashrc
