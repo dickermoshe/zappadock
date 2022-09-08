@@ -39,34 +39,31 @@ def zappadock():
     # Set Zappadock Docker Filename
     docker_file = '.zappadock-Dockerfile'
 
-    # Create Dockerfile if it doesn't exist
-    if not os.path.isfile(docker_file):
+    click.echo(f"Creating Dockerfile.")
+    with open(docker_file, 'w') as f:
 
-        click.echo(f"Creating Dockerfile.")
-        with open(docker_file, 'w') as f:
+        # Find the current running Python version
+        python_version = '.'.join(platform.python_version().split('.')[:2])
 
-            # Find the current running Python version
-            python_version = '.'.join(platform.python_version().split('.')[:2])
+        # Check if the current Python version is supported
+        if python_version not in ['3.6', '3.7', '3.8','3.9']:
+            click.echo(f"Python version {python_version} is not supported. Please use 3.6, 3.7, 3.8, or 3.9.")
+            exit()
 
-            # Check if the current Python version is supported
-            if python_version not in ['3.6', '3.7', '3.8','3.9']:
-                click.echo(f"Python version {python_version} is not supported. Please use 3.6, 3.7, 3.8, or 3.9.")
-                exit()
+        # Check the current architecture
+        if (platform.machine().lower() in ['aarch64', 'arm64', 'armv7l', 'armv8l']
+            and python_version in ['3.6', '3.7']):
+            click.echo("AWS Lambda does not support Python 3.6 or 3.7 on ARM64 on devices.")
+            exit()
 
-            # Check the current architecture
-            if (platform.machine().lower() in ['aarch64', 'arm64', 'armv7l', 'armv8l']
-                and python_version in ['3.6', '3.7']):
-                click.echo("AWS Lambda does not support Python 3.6 or 3.7 on ARM64 on devices.")
-                exit()
-            
-            # Get the base image
-            if python_version in ['3.8','3.9']:
-                image = f"mlupin/docker-lambda:python{python_version}-build"
-            else:
-                image = f"lambci/lambda:build-python{python_version}"
+        # Get the base image
+        if python_version in ['3.8','3.9']:
+            image = f"mlupin/docker-lambda:python{python_version}-build"
+        else:
+            image = f"lambci/lambda:build-python{python_version}"
 
-            # Write the Dockerfile
-            f.write(DOCKERFILE.format(base_image=image))
+        # Write the Dockerfile
+        f.write(DOCKERFILE.format(base_image=image))
 
     docker_run_command = ["docker run -ti --rm"]
 
