@@ -5,7 +5,7 @@ with open("README.md", "r", encoding="utf-8") as fh:
 
 setup(
     name="zappadock",
-    version='0.1.9',
+    version='0.1.10',
     author="Moshe Dicker",
     author_email='dickermoshe@gmail.com',
     description="A tool for running Zappa commands in a Lambda-like' environment.",
