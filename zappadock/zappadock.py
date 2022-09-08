@@ -22,6 +22,7 @@ RUN yum install -y which clang cmake python-devel python3-devel amazon-linux-ext
 # Commands to Create/Activate python Virtual Environment on launch
 RUN echo 'virtualenv -p python3 ./zappa-venv >/dev/null' >> /root/.bashrc
 RUN echo 'source ./zappa-venv/bin/activate >/dev/null' >> /root/.bashrc
+ENV VIRTUAL_ENV=/var/task/zappa-venv
 
 CMD ["bash"]"""
 
